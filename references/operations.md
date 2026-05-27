@@ -24,6 +24,18 @@ WantedBy=multi-user.target
 
 Adjust `ExecStart` for Vanilla/Paper/Forge.
 
+## JVM Flags
+
+Keep service management in systemd. Do not replace the unit with a generated restart shell script unless the user explicitly wants that deployment style.
+
+For modern Java 21 servers with 6G+ heap, a curated Aikar/flags.sh-style G1GC command is a good default:
+
+```bash
+/usr/bin/java -Xms8G -Xmx8G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -jar /opt/minecraft/fabric-server-launch.jar nogui
+```
+
+Adjust heap size to the host and workload. Prefer equal `-Xms`/`-Xmx` for dedicated servers. Leave memory for OS cache, native memory, backups, and monitoring. Do not tune flags blindly if Spark shows entities, chunk I/O, or a specific mod/plugin as the bottleneck.
+
 ## Firewall
 
 Recommended UFW posture:

@@ -78,7 +78,7 @@ Use these unless the user chooses otherwise:
   - 8-12G moderate modpacks
   - Avoid allocating nearly all RAM to Java
 - JVM: Java 21 for modern 1.20.5+ / 1.21+ servers unless metadata says otherwise
-- Startup flags: simple G1GC flags are fine; do not overfit JVM flags before profiling
+- Startup flags: use simple G1GC flags by default; for 6G+ heaps, consider a curated Aikar/flags.sh-style G1GC set inside the systemd `ExecStart`, but do not replace systemd with a generated shell loop unless the user asks
 
 ## Safety Rules
 
@@ -106,6 +106,7 @@ For all server types:
 - Set a world border near the pregenerated radius.
 - Use Spark profiles to diagnose TPS/MSPT issues.
 - Treat entities, farms, chunk I/O, view distance, and bad mods/plugins as likely bottlenecks.
+- Treat JVM flag generators such as `flags.sh` as references for GC tuning, not as a substitute for service management, mod/plugin compatibility checks, pregeneration, or profiling.
 
 ## Command Pattern
 
