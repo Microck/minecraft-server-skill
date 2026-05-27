@@ -1,0 +1,4 @@
+interface:
+  display_name: "Minecraft Server"
+  short_description: "Deploy and operate Minecraft servers"
+  default_prompt: "Use $minecraft-server to deploy a secure, optimized Minecraft server."
