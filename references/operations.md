@@ -103,6 +103,81 @@ For private servers:
 
 Keep `enforce-whitelist=true` so currently connected non-whitelisted players are removed when whitelist changes.
 
+## Optional Gameplay And Display Tweaks
+
+Ask before applying any of these. They are common private-server quality-of-life choices, but they change visible UI or gameplay behavior.
+
+### Hearts In Tab And Deaths Below Names
+
+Use vanilla scoreboards when the user asks for hearts in tab/player list or deaths below names:
+
+```text
+/scoreboard objectives add health health
+/scoreboard objectives modify health rendertype hearts
+/scoreboard objectives setdisplay list health
+/scoreboard objectives add deaths deathCount Deaths
+/scoreboard objectives setdisplay below_name deaths
+```
+
+On current 1.21.x command syntax, the below-name slot is `below_name`, not old `belowName` spellings. The `list` slot is the player-list/tab overlay. Clear accidental sidebars with:
+
+```text
+/scoreboard objectives setdisplay sidebar
+```
+
+### TPS/MSPT In Tab Footer
+
+If TabTPS is installed and the user wants TPS/MSPT in the lower tab area, make the default display permission-free and enable tab footer on login:
+
+```hocon
+permission=""
+tab-settings {
+    allow=true
+    enable-on-login=true
+    header-modules=""
+    footer-modules="tps,mspt"
+}
+```
+
+Restart the server or use the mod's reload command if available after editing TabTPS config.
+
+### Disable Phantoms
+
+If the user wants phantoms disabled, prefer the targeted vanilla gamerule:
+
+```text
+/gamerule doInsomnia false
+```
+
+This disables phantom spawning from insomnia without affecting other mob behavior.
+
+### Disable Enderman Grief Only
+
+Do not use broad `mobGriefing=false` just to stop Endermen unless the user explicitly wants all mob griefing disabled. Broad `mobGriefing=false` also affects creepers, villager farming, and other mechanics.
+
+For targeted Enderman grief prevention:
+
+1. Keep or restore:
+
+```text
+/gamerule mobGriefing true
+```
+
+2. Install a compatible No Enderman Grief datapack/mod for the selected Minecraft version. For datapacks, put the `.zip` in:
+
+```text
+/opt/minecraft/world/datapacks/
+```
+
+3. Run:
+
+```text
+/reload
+/datapack list enabled
+```
+
+Verify the datapack appears in the enabled list.
+
 ## Profiling
 
 Use Spark:

@@ -20,6 +20,7 @@ Deploy Minecraft Java servers as production services, not one-off jar launches. 
    - Public/private access: whitelist, player count, seed, view distance preference.
    - EULA acceptance.
    - Mod/plugin goals: performance-only, admin tools, gameplay, full modpack.
+   - Optional quality-of-life rules/displays: hearts in tab, TPS/MSPT in tab footer, deaths below names, phantoms disabled, Enderman grief disabled.
 3. Verify all version-specific downloads from official metadata or primary project APIs before installing.
    - Use `scripts/mcmeta.py` for Mojang, Fabric, and Modrinth metadata.
    - Browse official docs or project APIs when metadata is missing or stale.
@@ -88,6 +89,7 @@ Use these unless the user chooses otherwise:
 - Do not expose RCON publicly; use localhost, firewall, or VPN.
 - Do not install C2ME/alpha performance mods by default; profile first.
 - Do not start a new world before applying a requested seed.
+- Do not apply gameplay-changing quality-of-life rules or datapacks automatically; ask first, then document the exact commands/files used.
 - Do not delete worlds, mods, configs, or backups without explicit approval.
 - Stop the service before changing loader jars, mods, plugins, Java, or world-critical configs.
 
