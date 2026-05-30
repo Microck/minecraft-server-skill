@@ -36,6 +36,7 @@ Deploy Minecraft Java servers as production services, not one-off jar launches. 
      - Ask whether to install BlazeandCave's Advancements Pack.
      - If yes, ask whether cooperative mode should be enabled.
      - Default BACAP configuration: item rewards off, XP rewards off, trophies on, welcome/intro message off, advancement messages on, scoreboard off.
+   - Backup policy: ask desired frequency, retention, whether to backup with no players online, whether to backup on stop/start, and free-space reserve. If omitted, use a conservative daily or 6-hour full-backup policy with retention and size caps.
 3. Verify all version-specific downloads from official metadata or primary project APIs before installing.
    - Use `scripts/mcmeta.py` for Mojang, Fabric, and Modrinth metadata.
    - Browse official docs or project APIs when metadata is missing or stale.
@@ -170,6 +171,18 @@ For optional gameplay datapacks:
 - Default BACAP setup when selected: `item_rewards_off`, `exp_rewards_off`, `trophies_on`, `intro_msg_off`, `msg_set_on`, and clear scoreboard display slots with `scoreboard objectives setdisplay list`, `sidebar`, and `below_name`.
 - Ask before enabling BACAP cooperative mode. If enabled, run `function blazeandcave:config/coop_on`; for team-based cooperative mode, use `coop_on_team` only when the user explicitly wants team-based sharing.
 
+For backups:
+
+- Prefer an installed backup mod/tool over ad hoc archives when it exists. Document the exact config path and current defaults before changing them.
+- Conservative default for Just Enough Backups on small/friend servers: full backups enabled, every 360 minutes, do not pause when no players are online, backup on server stop, no backup on start, 5-minute warning, strict integrity, summary file enabled, 10 GB free-space reserve, retain 14 full backups, and cap total backup size around 50 GB.
+- Before risky changes, take or verify a recent backup, then report the backup path and restore caveats.
+
+For player onboarding/client exports:
+
+- Emit a concise server invite/onboarding note when setup changes affect players: address, Minecraft version, loader, BlueMap URL, whitelist/Discord linking steps, enabled gameplay datapacks, and recommended client mods.
+- Generate a client mod list grouped as required/recommended/optional/client-only. Be explicit that client-only mods such as Sodium, Litematica, MiniHUD, Tweakeroo, Item Scroller, Mod Menu, and ReplayMod should not be installed on the server.
+- For Map Link, include the exact server address the client should match and the BlueMap URL.
+
 ## Command Pattern
 
 Use `systemctl`, logs, and RCON/admin commands:
@@ -208,4 +221,5 @@ Report:
 - Key `server.properties` values, including `max-players`, view distance, simulation distance, online mode, and whitelist.
 - Whitelist/ops status.
 - Pregeneration/backups/profiling state.
+- Client onboarding/export path or text when generated.
 - Any known warnings, skipped items, or follow-up commands.

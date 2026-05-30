@@ -16,6 +16,8 @@ Use this skill when an agent is asked to install, upgrade, configure, optimize, 
 - **Gameplay datapacks** - Optional BlazeandCave's Advancements Pack install with conservative reward/message/scoreboard defaults and explicit co-op choice
 - **Technical Minecraft tooling** - Optional TMC stack: Carpet, Servux, Syncmatica, carpet-extra, carpet-tis-addition
 - **Pregeneration & profiling** - Chunky chunk pregeneration, Spark TPS/MSPT profiling, world border enforcement
+- **Backups** - Backup policy prompts and Just Enough Backups defaults for frequency, retention, warnings, and free-space reserve
+- **Client onboarding** - Server invite text and client mod/export guidance for players
 - **Quality-of-life tweaks** - Hearts in tab, deaths below names, sleep percentage, phantom/Enderman grief control, TPS in tab footer
 - **Validation** - Service state, logs, listening ports, firewall rules, whitelist/ops, mod/plugin load results
 
@@ -122,6 +124,34 @@ Default BACAP configuration when selected:
 | Advancement messages | On |
 | Scoreboard display | Off |
 | Cooperative mode | Ask |
+
+## Backups
+
+The skill asks for backup frequency, retention, whether to backup with no players online, backup-on-stop/start behavior, and free-space reserve.
+
+Default Just Enough Backups policy for small/friend servers:
+
+| Setting | Default |
+|---|---|
+| Mode | Full backups |
+| Automatic interval | 360 minutes |
+| Pause without players | No |
+| Backup on start | No |
+| Backup on stop | Yes |
+| Warning | 5 minutes |
+| Integrity | Strict |
+| Summary file | Enabled |
+| Free-space reserve | 10 GB |
+| Retention | 14 full backups |
+| Total backup cap | 50 GB |
+
+## Client Onboarding
+
+When setup changes affect players, the skill can emit:
+
+- Server invite/onboarding text with address, Minecraft version, BlueMap URL, whitelist and Discord linking notes
+- Client mod list grouped as required, recommended, optional, and client-only
+- Map Link config values for BlueMap/Xaero player visibility
 
 ## Safety Posture
 
