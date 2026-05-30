@@ -2,53 +2,131 @@
 
 Codex skill for deploying, hardening, optimizing, and operating Minecraft Java servers on Linux VPS or dedicated hosts.
 
-Use this skill when an agent is asked to install, upgrade, configure, optimize, secure, or operate a Minecraft Java server. It covers Vanilla, Fabric, Quilt, Forge, NeoForge, Paper, Purpur, and Folia setups, with an emphasis on treating the server like a production service instead of a one-off jar launch.
+Use this skill when an agent is asked to install, upgrade, configure, optimize, secure, or operate a Minecraft Java server. Covers Vanilla, Fabric, Quilt, Forge, NeoForge, Paper, Purpur, and Folia setups, treating the server as a production service instead of a one-off jar launch.
 
-## What It Does
+## Features
 
-- Discovers host facts before asking setup questions: OS, CPU, RAM, disk, Java, existing services, ports, firewall, and private-network access.
-- Guides only the high-impact choices that cannot be discovered safely, such as Minecraft version, server type, EULA acceptance, whitelist posture, seed, MOTD, icon, mods, plugins, and gameplay display tweaks.
-- Verifies version-specific downloads through official metadata and project APIs before installation.
-- Installs the server under a dedicated `minecraft` user, usually in `/opt/minecraft`.
-- Runs the server through `systemd` with conservative JVM, restart, ownership, and logging defaults.
-- Keeps public exposure narrow: normally only `25565/tcp`, with RCON, query, web maps, panels, and databases private unless explicitly requested and protected.
-- Validates the finished server through service state, logs, listening ports, firewall rules, whitelist and ops state, and mod or plugin load results.
+- **Host discovery** - OS, CPU, RAM, disk, Java, existing services, ports, firewall, private-network access
+- **Guided setup** - Asks only high-impact choices: version, server type, EULA, whitelist, seed, MOTD, icon, mods/plugins, quality-of-life tweaks
+- **Verified downloads** - Mojang, Fabric, PaperMC, and Modrinth metadata APIs with SHA1 checks
+- **Service management** - Dedicated `minecraft` user, systemd unit, conservative JVM flags, restart/logging defaults
+- **Network hardening** - Public only `25565/tcp`; RCON, query, web maps, panels stay private by default
+- **Discord bridge** - Discord Integration (`dcintegration`) for Fabric, Discord-MC-Chat for advanced setups, DiscordSRV for Paper/Spigot
+- **Live mapping** - BlueMap server-side live map with optional Xaero's/Map Link client-side player visibility
+- **Technical Minecraft tooling** - Optional TMC stack: Carpet, Servux, Syncmatica, carpet-extra, carpet-tis-addition
+- **Pregeneration & profiling** - Chunky chunk pregeneration, Spark TPS/MSPT profiling, world border enforcement
+- **Quality-of-life tweaks** - Hearts in tab, deaths below names, sleep percentage, phantom/Enderman grief control, TPS in tab footer
+- **Validation** - Service state, logs, listening ports, firewall rules, whitelist/ops, mod/plugin load results
+
+## Server Type Recommendations
+
+| Use Case | Recommended Type |
+|---|---|
+| Vanilla-compatible performance mods, technical/private servers | Fabric |
+| Plugin ecosystems, public/community servers | Paper / Purpur |
+| Specific modpack that requires it | Forge / NeoForge |
+| Absolute Mojang behavior required | Vanilla |
+| Region-based multithreading (experimental) | Folia |
+
+## Installation
+
+Clone into your Codex skills directory:
+
+```bash
+git clone https://github.com/Microck/minecraft-server-skill ~/.codex/skills/minecraft-server
+```
+
+Or clone elsewhere and symlink:
+
+```bash
+git clone https://github.com/Microck/minecraft-server-skill.git
+ln -s "$(pwd)/minecraft-server-skill" ~/.codex/skills/minecraft-server
+```
+
+Invoke with `$minecraft-server` when the task involves Minecraft Java server deployment or operations.
+
+## Repository Structure
+
+| Path | Description |
+|---|---|
+| `SKILL.md` | Main workflow, defaults, safety rules, performance baselines, command patterns, completion criteria |
+| `references/vanilla.md` | Mojang metadata, server jar verification, install shape, tuning notes |
+| `references/fabric.md` | Fabric and Quilt metadata, installer workflow, baseline mods, server properties, validation |
+| `references/forge-neoforge.md` | Forge and NeoForge modpack workflow, compatibility checks, tuning notes |
+| `references/paper.md` | Paper, Purpur, and Folia metadata, plugin baseline, configuration guidance |
+| `references/operations.md` | systemd, JVM flags, firewall, RCON, Chunky pregeneration, backups, whitelist, ops, gameplay tweaks, Spark profiling |
+| `scripts/mcmeta.py` | CLI helper for Mojang, Fabric, and Modrinth metadata plus SHA1 verification |
+| `agents/openai.yaml` | OpenAI-facing skill metadata |
+
+## `mcmeta.py` Command Reference
+
+```bash
+# Mojang server metadata and download URL
+python3 scripts/mcmeta.py minecraft-version 1.21.4
+
+# Fabric loader version for a Minecraft version
+python3 scripts/mcmeta.py fabric-loader 1.21.4
+
+# Latest Fabric installer metadata
+python3 scripts/mcmeta.py fabric-installer
+
+# Modrinth project version lookup
+python3 scripts/mcmeta.py modrinth lithium 1.21.4 --loader fabric
+
+# SHA1 hash of a local file
+python3 scripts/mcmeta.py sha1 /opt/minecraft/server.jar
+```
+
+## Agent Workflow
+
+1. Read `SKILL.md`.
+2. Read exactly one server-type reference for the requested variant.
+3. Use `references/operations.md` for systemd, backups, firewall, RCON, pregeneration, profiling, whitelist, ops, or gameplay tweaks.
+4. Use `scripts/mcmeta.py` or official project APIs to verify version-specific downloads.
+5. Report: Minecraft version, server type, Java version, installed mods/plugins, service status, path, ports, firewall exposure, key `server.properties` values, whitelist/ops status, backup/profiling state, and any warnings or skipped items.
+
+## Defaults
+
+| Setting | Default |
+|---|---|
+| Path | `/opt/minecraft` |
+| User/group | `minecraft` |
+| Service | `minecraft.service` |
+| Game mode | survival |
+| Difficulty | hard |
+| Sleep percentage | 33 |
+| Online auth | `online-mode=true` |
+| Whitelist | Enabled (private); disabled only if public launch is explicit |
+| Spawn protection | `0` |
+| RCON | Disabled; if enabled, localhost-only with strong password |
+| View distance | 8-10 (public), 12 (small private), 16 (2-4 players + pregen) |
+| Simulation distance | 5-6 |
+| Memory | 4G vanilla/Paper, 6-8G Fabric baseline, 8-12G modpacks |
+| JVM | Java 21 for 1.20.5+ / 1.21+ |
+| GC | G1GC; curated Aikar-style flags for 6G+ heaps |
 
 ## Safety Posture
 
-The skill defaults to conservative, observable server operations:
-
 - Do not run the server as root.
 - Do not expose RCON publicly.
-- Keep `online-mode=true` unless the user explicitly accepts the username-spoofing risk.
+- Keep `online-mode=true` unless the user explicitly accepts username-spoofing risk.
 - Do not delete worlds, mods, configs, or backups without explicit approval.
 - Stop the service before changing loader jars, mods, plugins, Java, or world-critical config.
 - Do not start a new world before applying a requested seed.
 - Do not apply gameplay-changing rules or datapacks automatically.
+- Discord bot tokens are secrets - never commit, paste, or log them.
 
-## Repository Contents
+## Performance Baselines
 
-- `SKILL.md` - main workflow, defaults, safety rules, performance baseline, command patterns, and completion criteria.
-- `references/vanilla.md` - Mojang metadata, server jar verification, install shape, and tuning notes.
-- `references/fabric.md` - Fabric and Quilt metadata, installer workflow, baseline mods, server properties, and validation.
-- `references/forge-neoforge.md` - Forge and NeoForge modpack workflow, compatibility checks, and tuning notes.
-- `references/paper.md` - Paper, Purpur, and Folia metadata, plugin baseline, and configuration guidance.
-- `references/operations.md` - systemd, JVM flags, firewall, RCON, Chunky pregeneration, backups, whitelist, ops, optional gameplay tweaks, and Spark profiling.
-- `scripts/mcmeta.py` - helper for Mojang, Fabric, and Modrinth metadata plus SHA1 checks.
-- `agents/openai.yaml` - OpenAI-facing skill metadata.
+**Fabric (private/performance):**
+`fabric-api`, `lithium`, `ferrite-core`, `spark`, `chunky`, `krypton`, `servercore`, `scalablelux`, `alternate-current`
 
-## How To Use
+**Fabric (Technical Minecraft):**
+`fabric-api`, `fabric-carpet`, `lithium`, `ferrite-core`, `servux`, `syncmatica`, with optional `carpet-extra`, `carpet-tis-addition`
 
-Install or reference this skill, then invoke `$minecraft-server` when the task involves Minecraft Java server deployment or operations.
-
-A good agent workflow is:
-
-1. Read `SKILL.md`.
-2. Read exactly one server-type reference for the requested variant.
-3. Use `references/operations.md` when the task touches systemd, backups, firewall, RCON, pregeneration, profiling, whitelist, ops, or gameplay display tweaks.
-4. Use `scripts/mcmeta.py` or official project APIs to verify version-specific downloads.
-5. Report the Minecraft version, server type, Java version, installed mods or plugins, service status, path, ports, firewall exposure, key `server.properties` values, whitelist and ops status, backup or profiling state, and any warnings or skipped items.
+**Paper/Purpur:**
+Config tuning + plugins: Spark, Chunky, LuckPerms, CoreProtect
 
 ## Operating Philosophy
 
-The skill favors one clear current-state server implementation: dedicated user, explicit service management, version compatibility checks, backups, profiling, and narrow network exposure. It avoids silent compatibility guesses, public admin surfaces, and broad tuning changes that are not backed by logs or profiles.
+The skill favors one clear current-state server implementation: dedicated user, explicit service management, version compatibility checks, backups, profiling, and narrow network exposure. It avoids silent compatibility guesses, public admin surfaces, and broad tuning changes not backed by logs or profiles.
