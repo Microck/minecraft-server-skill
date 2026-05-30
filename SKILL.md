@@ -112,6 +112,13 @@ For Fabric small private servers, install only compatible stable releases:
 - `fabric-api`, `lithium`, `ferrite-core`, `spark`, `chunky`, `krypton`, `servercore`, `scalablelux`, `alternate-current`.
 - Add `c2me` only after Spark shows chunk generation/loading as the bottleneck and the user accepts alpha/devbuild risk.
 
+For Technical Minecraft/Fabric servers, ask before adding a TMC tooling stack:
+
+- Practical baseline: `fabric-api`, `fabric-carpet`, `lithium`, `ferrite-core`, `servux`, `syncmatica`.
+- Add-on tools when explicitly useful: `carpet-extra`, `carpet-tis-addition`.
+- Performance extras to treat carefully: `krypton` is generally reasonable; `c2me` needs explicit user consent and testing on a backup first.
+- Omit client-only TMC mods from server installs, including Sodium, Litematica, MiniHUD, Tweakeroo, Item Scroller, Mod Menu, and ReplayMod.
+
 For Paper/Purpur, prefer config tuning and plugins over Fabric mods. Use Spark and Chunky equivalents where compatible.
 
 For all server types:
