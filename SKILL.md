@@ -17,7 +17,11 @@ Deploy Minecraft Java servers as production services, not one-off jar launches. 
 2. Ask only high-impact choices not discoverable from the host:
    - Minecraft version.
    - Server type: Vanilla, Fabric, Quilt, Forge, NeoForge, Paper, Purpur, Folia.
-   - Public/private access: whitelist, player count, seed, view distance preference.
+   - Public/private access: whitelist, player count, view distance preference.
+   - World identity and server-list presentation:
+     - Seed: ask whether to use a random seed or a custom seed before first world creation.
+     - Server description/MOTD: ask whether to use the default or a custom description.
+     - Server icon/profile picture: ask whether to use none/default or a supplied image URL/file.
    - EULA acceptance.
    - Mod/plugin goals: performance-only, admin tools, gameplay, full modpack.
    - Optional quality-of-life rules/displays: hearts in tab, TPS/MSPT in tab footer, deaths below names, phantoms disabled, Enderman grief disabled.
@@ -64,8 +68,12 @@ Use these unless the user chooses otherwise:
 - User/group: `minecraft`
 - Service: `minecraft.service`
 - Game mode: survival
+- Difficulty: hard
+- Sleeping: set `playersSleepingPercentage` to `33` after first startup unless the user chooses another value
 - Online auth: `online-mode=true`
 - Whitelist: enabled for private/friend servers, disabled only if public launch is explicit
+- Server description/MOTD: ask; if omitted, use a concise version/type description
+- Server icon/profile picture: ask; if supplied, convert to `server-icon.png`, exactly 64x64 PNG, in the server root
 - RCON: disabled by default; if needed, enable with strong password and firewall deny public `25575/tcp`
 - Query: disabled by default
 - View distance:
@@ -89,6 +97,8 @@ Use these unless the user chooses otherwise:
 - Do not expose RCON publicly; use localhost, firewall, or VPN.
 - Do not install C2ME/alpha performance mods by default; profile first.
 - Do not start a new world before applying a requested seed.
+- For existing worlds, explain that changing the seed affects future generation only; existing chunks remain unchanged unless explicitly deleted/reset.
+- When applying a custom server icon/profile picture, download only from the user-provided source, convert/crop to 64x64 PNG, and set ownership so the service user can read it.
 - Do not apply gameplay-changing quality-of-life rules or datapacks automatically; ask first, then document the exact commands/files used.
 - Do not delete worlds, mods, configs, or backups without explicit approval.
 - Stop the service before changing loader jars, mods, plugins, Java, or world-critical configs.
@@ -123,6 +133,19 @@ sudo ufw status numbered
 ```
 
 If RCON is enabled, keep credentials in a root/minecraft-readable file such as `/opt/minecraft/.rcon-password`; prefer local-only command execution and firewall-deny `25575/tcp`.
+
+Useful initial world/server commands after first successful startup:
+
+```bash
+gamerule playersSleepingPercentage 33
+scoreboard objectives add health health
+scoreboard objectives setdisplay list health
+scoreboard objectives modify health rendertype hearts
+scoreboard objectives add deaths deathCount
+scoreboard objectives setdisplay below_name deaths
+```
+
+Set `difficulty=hard` and any chosen `motd=`/`level-seed=` in `server.properties` before the first full launch. Minecraft server icons must be named `server-icon.png`, placed in the server root, and be a 64x64 PNG.
 
 ## Completion Criteria
 
