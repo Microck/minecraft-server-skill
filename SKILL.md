@@ -26,6 +26,11 @@ Deploy Minecraft Java servers as production services, not one-off jar launches. 
      - Server icon/profile picture: ask whether to use none/default or a supplied image URL/file.
    - EULA acceptance.
    - Mod/plugin goals: performance-only, admin tools, gameplay, full modpack.
+   - Optional Discord bridge:
+     - Ask whether to link Minecraft chat/events to Discord.
+     - For Fabric 1.21.10, recommend Discord Integration (`dcintegration`) for simple chat/event bridging.
+     - Offer Discord-MC-Chat only when the user wants heavier customization, multi-server mode, console forwarding, or advanced formatting.
+     - Avoid DiscordSRV unless the server type is Paper/Spigot/Purpur, because it is plugin-server oriented.
    - Optional quality-of-life rules/displays: hearts in tab, TPS/MSPT in tab footer, deaths below names, phantoms disabled, Enderman grief disabled.
 3. Verify all version-specific downloads from official metadata or primary project APIs before installing.
    - Use `scripts/mcmeta.py` for Mojang, Fabric, and Modrinth metadata.
@@ -101,6 +106,7 @@ Use these unless the user chooses otherwise:
 - Do not start a new world before applying a requested seed.
 - For existing worlds, explain that changing the seed affects future generation only; existing chunks remain unchanged unless explicitly deleted/reset.
 - When applying a custom server icon/profile picture, download only from the user-provided source, convert/crop to 64x64 PNG, and set ownership so the service user can read it.
+- For Discord bridges, never expose or print bot tokens. Prefer prompting for bot token, channel ID, and optional admin role IDs only after the mod is installed and its config path is known. Keep bot tokens in the mod config with restrictive file permissions where practical.
 - Do not apply gameplay-changing quality-of-life rules or datapacks automatically; ask first, then document the exact commands/files used.
 - Do not delete worlds, mods, configs, or backups without explicit approval.
 - Stop the service before changing loader jars, mods, plugins, Java, or world-critical configs.
@@ -118,6 +124,18 @@ For Technical Minecraft/Fabric servers, ask before adding a TMC tooling stack:
 - Add-on tools when explicitly useful: `carpet-extra`, `carpet-tis-addition`.
 - Performance extras to treat carefully: `krypton` is generally reasonable; `c2me` needs explicit user consent and testing on a backup first.
 - Omit client-only TMC mods from server installs, including Sodium, Litematica, MiniHUD, Tweakeroo, Item Scroller, Mod Menu, and ReplayMod.
+
+For Fabric Discord chat bridging:
+
+- Default recommendation: Discord Integration (`dcintegration`) when compatible with the chosen Minecraft/Fabric version.
+- Setup sequence:
+  1. Install the compatible server-side jar in `mods/`.
+  2. Start once to generate config, then stop before editing secrets.
+  3. Have the user create a Discord application/bot, enable required bot intents, and invite it with bot + application command scopes.
+  4. Configure `config/Discord-Integration.toml` with `botToken`, `botChannel`, and optional `adminRoleIDs`.
+  5. Restart and test Minecraft-to-Discord and Discord-to-Minecraft chat.
+- Alternative: Discord-MC-Chat for advanced formatting, multi-server mode, status/player-count display, console forwarding, or more complex webhook behavior.
+- Treat Discord bot tokens as secrets; never commit, paste back, or log them.
 
 For Paper/Purpur, prefer config tuning and plugins over Fabric mods. Use Spark and Chunky equivalents where compatible.
 
