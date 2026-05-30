@@ -7,12 +7,13 @@ Use this skill when an agent is asked to install, upgrade, configure, optimize, 
 ## Features
 
 - **Host discovery** - OS, CPU, RAM, disk, Java, existing services, ports, firewall, private-network access
-- **Guided setup** - Asks only high-impact choices: version, server type, EULA, whitelist, seed, MOTD, icon, mods/plugins, quality-of-life tweaks
+- **Guided setup** - Asks only high-impact choices: version, server type, EULA, whitelist, max player slots, seed, MOTD, icon, mods/plugins, datapacks, quality-of-life tweaks
 - **Verified downloads** - Mojang, Fabric, PaperMC, and Modrinth metadata APIs with SHA1 checks
 - **Service management** - Dedicated `minecraft` user, systemd unit, conservative JVM flags, restart/logging defaults
 - **Network hardening** - Public only `25565/tcp`; RCON, query, web maps, panels stay private by default
 - **Discord bridge** - Discord Integration (`dcintegration`) for Fabric, Discord-MC-Chat for advanced setups, DiscordSRV for Paper/Spigot
 - **Live mapping** - BlueMap server-side live map with optional Xaero's/Map Link client-side player visibility
+- **Gameplay datapacks** - Optional BlazeandCave's Advancements Pack install with conservative reward/message/scoreboard defaults and explicit co-op choice
 - **Technical Minecraft tooling** - Optional TMC stack: Carpet, Servux, Syncmatica, carpet-extra, carpet-tis-addition
 - **Pregeneration & profiling** - Chunky chunk pregeneration, Spark TPS/MSPT profiling, world border enforcement
 - **Quality-of-life tweaks** - Hearts in tab, deaths below names, sleep percentage, phantom/Enderman grief control, TPS in tab footer
@@ -97,6 +98,7 @@ python3 scripts/mcmeta.py sha1 /opt/minecraft/server.jar
 | Sleep percentage | 33 |
 | Online auth | `online-mode=true` |
 | Whitelist | Enabled (private); disabled only if public launch is explicit |
+| Max players | Ask during setup; `20` for small/friend servers if omitted |
 | Spawn protection | `0` |
 | RCON | Disabled; if enabled, localhost-only with strong password |
 | View distance | 8-10 (public), 12 (small private), 16 (2-4 players + pregen) |
@@ -104,6 +106,22 @@ python3 scripts/mcmeta.py sha1 /opt/minecraft/server.jar
 | Memory | 4G vanilla/Paper, 6-8G Fabric baseline, 8-12G modpacks |
 | JVM | Java 21 for 1.20.5+ / 1.21+ |
 | GC | G1GC; curated Aikar-style flags for 6G+ heaps |
+
+## Optional Datapacks
+
+For BlazeandCave's Advancements Pack, the skill asks before installing and asks separately whether cooperative mode should be enabled.
+
+Default BACAP configuration when selected:
+
+| Option | Default |
+|---|---|
+| Item rewards | Off |
+| XP rewards | Off |
+| Trophies | On |
+| Welcome/intro message | Off |
+| Advancement messages | On |
+| Scoreboard display | Off |
+| Cooperative mode | Ask |
 
 ## Safety Posture
 
