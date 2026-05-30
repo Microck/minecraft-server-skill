@@ -13,6 +13,7 @@ Use this skill when an agent is asked to install, upgrade, configure, optimize, 
 - **Network hardening** - Public only `25565/tcp`; RCON, query, web maps, panels stay private by default
 - **Discord bridge** - Discord Integration (`dcintegration`) for Fabric, Discord-MC-Chat for advanced setups, DiscordSRV for Paper/Spigot
 - **Live mapping** - BlueMap server-side live map with optional Xaero's/Map Link client-side player visibility
+- **Distant terrain choices** - Distant Horizons server/client LOD sync or Voxy/VoxyServer with safe trial/rollback guidance
 - **Gameplay datapacks** - Optional BlazeandCave's Advancements Pack install with conservative reward/message/scoreboard defaults and explicit co-op choice
 - **Technical Minecraft tooling** - Optional TMC stack: Carpet, Servux, Syncmatica, carpet-extra, carpet-tis-addition
 - **Pregeneration & profiling** - Chunky chunk pregeneration, Spark TPS/MSPT profiling, world border enforcement
@@ -152,6 +153,17 @@ When setup changes affect players, the skill can emit:
 - Server invite/onboarding text with address, Minecraft version, BlueMap URL, whitelist and Discord linking notes
 - Client mod list grouped as required, recommended, optional, and client-only
 - Map Link config values for BlueMap/Xaero player visibility
+
+## Distant Terrain
+
+The skill asks whether to use Distant Horizons, Voxy/VoxyServer, or neither.
+
+| System | Server | Client | Notes |
+|---|---|---|---|
+| Distant Horizons | Distant Horizons server jar | Distant Horizons | Server-side LOD sync/generation; DH LOD data is separate from vanilla chunks |
+| Voxy/VoxyServer | VoxyServer | Voxy | VoxyServer is server-side only; Voxy is the client renderer |
+
+When trialing Voxy after DH, the skill should back up first, stop the server, move DH jars out of `mods/` rather than deleting them, keep DH LOD data intact, install VoxyServer and dependencies, then validate boot. Rollback is removing VoxyServer jars, restoring DH jars, and restarting.
 
 ## Safety Posture
 

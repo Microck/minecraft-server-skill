@@ -36,6 +36,10 @@ Deploy Minecraft Java servers as production services, not one-off jar launches. 
      - Ask whether to install BlazeandCave's Advancements Pack.
      - If yes, ask whether cooperative mode should be enabled.
      - Default BACAP configuration: item rewards off, XP rewards off, trophies on, welcome/intro message off, advancement messages on, scoreboard off.
+   - Optional distant-terrain system:
+     - Ask whether the user wants Distant Horizons, Voxy/VoxyServer, or neither.
+     - Explain the client/server split: DH needs DH on clients and server for sync; Voxy uses Voxy on clients and VoxyServer on the server.
+     - Explain that DH and Voxy LOD data are separate; switching systems should preserve the world if jars/data are moved instead of deleted, but progress does not transfer automatically.
    - Backup policy: ask desired frequency, retention, whether to backup with no players online, whether to backup on stop/start, and free-space reserve. If omitted, use a conservative daily or 6-hour full-backup policy with retention and size caps.
 3. Verify all version-specific downloads from official metadata or primary project APIs before installing.
    - Use `scripts/mcmeta.py` for Mojang, Fabric, and Modrinth metadata.
@@ -153,6 +157,14 @@ For BlueMap/Xaero player visibility:
 - Xaero's Minimap/World Map server-side Fabric jars are optional compatibility/config helpers; they do not by themselves make every remote player globally visible in clients.
 - For global BlueMap-to-Xaero player visibility, players need the client-side Map Link mod. Configure Map Link with a server entry whose `ip` exactly matches the address the client uses/detects, for example `145.241.164.73:25565`, and whose `link` points at the BlueMap URL, for example `http://host:8101/`.
 - Map Link's direct config fields are `maptype`, `ip`, and `link`; for BlueMap use `maptype: "Bluemap"`. Client config is usually `.minecraft/config/maplink.json5`.
+
+For distant-terrain systems:
+
+- Choose one primary distant-terrain system per server/client setup: Distant Horizons or Voxy/VoxyServer. Do not tell players to run both client-side renderers at the same time.
+- Distant Horizons: install the compatible server jar when the user wants server-side LOD sync/generation; clients need Distant Horizons installed to use the synced LODs. DH LOD databases live separately from vanilla region files and should not be deleted during experiments.
+- Voxy/VoxyServer: install VoxyServer on the server and tell players to install Voxy on the client. Do not tell players to install VoxyServer client-side unless the project documentation explicitly changes.
+- When trialing Voxy after DH, first take a backup, stop the server, move DH jars out of `mods/` into an archive directory instead of deleting them, keep existing DH data in place, install VoxyServer and dependencies, start and validate. To roll back, stop the server, remove VoxyServer jars, restore DH jars, and restart.
+- Verify all Voxy/VoxyServer downloads against current project metadata because version support and dependencies change quickly.
 
 For Paper/Purpur, prefer config tuning and plugins over Fabric mods. Use Spark and Chunky equivalents where compatible.
 
