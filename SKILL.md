@@ -15,6 +15,8 @@ Deploy Minecraft Java servers as production services, not one-off jar launches. 
    - Existing server/service: `/opt/minecraft`, `minecraft.service`, listening ports, firewall.
    - Existing Tailscale/private network if SSH/admin access is already constrained.
 2. Ask only high-impact choices not discoverable from the host:
+   - When the harness exposes an AskUser/user-input tool such as `request_user_input`, use it for setup choices. Group related choices into as few prompts as practical, offer recommended defaults first, and keep free-form questions for values such as version, seed, MOTD, icon URL/path, player names, and domain names.
+   - If no AskUser/user-input tool is available, ask concise plain-text questions instead and proceed with safe defaults when the user already gave enough information.
    - Minecraft version.
    - Server type: Vanilla, Fabric, Quilt, Forge, NeoForge, Paper, Purpur, Folia.
    - Public/private access: whitelist, player count, view distance preference.
