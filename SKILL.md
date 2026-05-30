@@ -81,6 +81,7 @@ Use these unless the user chooses otherwise:
 - Whitelist: enabled for private/friend servers, disabled only if public launch is explicit
 - Server description/MOTD: ask; if omitted, use a concise version/type description
 - Server icon/profile picture: ask; if supplied, convert to `server-icon.png`, exactly 64x64 PNG, in the server root
+- Spawn protection: set `spawn-protection=0` unless the user explicitly wants protected spawn
 - RCON: disabled by default; if needed, enable with strong password and firewall deny public `25575/tcp`
 - Query: disabled by default
 - View distance:
@@ -134,14 +135,25 @@ For Fabric Discord chat bridging:
   3. Have the user create a Discord application/bot, enable required bot intents, and invite it with bot + application command scopes.
   4. Configure `config/Discord-Integration.toml` with `botToken`, `botChannel`, and optional `adminRoleIDs`.
   5. Restart and test Minecraft-to-Discord and Discord-to-Minecraft chat.
+- If the user wants transparency/auditing, enable Discord Integration's `[commandLog]` with a real channel ID instead of `"0"`; keep low-signal commands such as `list`, `help`, and `?` ignored unless the user wants absolutely everything.
+- Account linking is normally `enableLinking = true`: players run `/discord link` in-game, then run the generated `/link <code>` command in Discord before the code expires.
+- Replace placeholder `/discord` invite values in `[ingameCommand]` with the real Discord invite before calling setup complete.
 - Alternative: Discord-MC-Chat for advanced formatting, multi-server mode, status/player-count display, console forwarding, or more complex webhook behavior.
 - Treat Discord bot tokens as secrets; never commit, paste back, or log them.
+
+For BlueMap/Xaero player visibility:
+
+- BlueMap is the best server-side live map. If exposed publicly, document the web port and firewall posture.
+- Xaero's Minimap/World Map server-side Fabric jars are optional compatibility/config helpers; they do not by themselves make every remote player globally visible in clients.
+- For global BlueMap-to-Xaero player visibility, players need the client-side Map Link mod. Configure Map Link with a server entry whose `ip` exactly matches the address the client uses/detects, for example `145.241.164.73:25565`, and whose `link` points at the BlueMap URL, for example `http://host:8101/`.
+- Map Link's direct config fields are `maptype`, `ip`, and `link`; for BlueMap use `maptype: "Bluemap"`. Client config is usually `.minecraft/config/maplink.json5`.
 
 For Paper/Purpur, prefer config tuning and plugins over Fabric mods. Use Spark and Chunky equivalents where compatible.
 
 For all server types:
 
 - Pregenerate chunks before inviting players when view distance is high.
+- After every restart during pregeneration, verify Chunky tasks resumed; if not, send `chunky continue <dimension>` via local RCON and confirm with `chunky progress`.
 - Set a world border near the pregenerated radius.
 - Use Spark profiles to diagnose TPS/MSPT issues.
 - Treat entities, farms, chunk I/O, view distance, and bad mods/plugins as likely bottlenecks.
