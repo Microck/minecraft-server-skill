@@ -32,6 +32,10 @@ Deploy Minecraft Java servers as production services, not one-off jar launches. 
      - Offer Discord-MC-Chat only when the user wants heavier customization, multi-server mode, console forwarding, or advanced formatting.
      - Avoid DiscordSRV unless the server type is Paper/Spigot/Purpur, because it is plugin-server oriented.
    - Optional quality-of-life rules/displays: hearts in tab, TPS/MSPT in tab footer, deaths below names, phantoms disabled, Enderman grief disabled.
+   - Optional gameplay datapacks:
+     - Ask whether to install BlazeandCave's Advancements Pack.
+     - If yes, ask whether cooperative mode should be enabled.
+     - Default BACAP configuration: item rewards off, XP rewards off, trophies on, welcome/intro message off, advancement messages on, scoreboard off.
 3. Verify all version-specific downloads from official metadata or primary project APIs before installing.
    - Use `scripts/mcmeta.py` for Mojang, Fabric, and Modrinth metadata.
    - Browse official docs or project APIs when metadata is missing or stale.
@@ -159,6 +163,12 @@ For all server types:
 - Use Spark profiles to diagnose TPS/MSPT issues.
 - Treat entities, farms, chunk I/O, view distance, and bad mods/plugins as likely bottlenecks.
 - Treat JVM flag generators such as `flags.sh` as references for GC tuning, not as a substitute for service management, mod/plugin compatibility checks, pregeneration, or profiling.
+
+For optional gameplay datapacks:
+
+- BlazeandCave's Advancements Pack is configured in-game with `/function blazeandcave:config`; use Modrinth metadata for the version compatible with the server's Minecraft version.
+- Default BACAP setup when selected: `item_rewards_off`, `exp_rewards_off`, `trophies_on`, `intro_msg_off`, `msg_set_on`, and clear scoreboard display slots with `scoreboard objectives setdisplay list`, `sidebar`, and `below_name`.
+- Ask before enabling BACAP cooperative mode. If enabled, run `function blazeandcave:config/coop_on`; for team-based cooperative mode, use `coop_on_team` only when the user explicitly wants team-based sharing.
 
 ## Command Pattern
 
