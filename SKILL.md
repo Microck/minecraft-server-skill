@@ -19,7 +19,7 @@ Deploy Minecraft Java servers as production services, not one-off jar launches. 
    - If no AskUser/user-input tool is available, ask concise plain-text questions instead and proceed with safe defaults when the user already gave enough information.
    - Minecraft version.
    - Server type: Vanilla, Fabric, Quilt, Forge, NeoForge, Paper, Purpur, Folia.
-   - Public/private access: whitelist, player count, view distance preference.
+   - Public/private access: whitelist, max player slots (`max-players`), expected active player count, and view distance preference.
    - World identity and server-list presentation:
      - Seed: ask whether to use a random seed or a custom seed before first world creation.
      - Server description/MOTD: ask whether to use the default or a custom description.
@@ -79,6 +79,7 @@ Use these unless the user chooses otherwise:
 - Sleeping: set `playersSleepingPercentage` to `33` after first startup unless the user chooses another value
 - Online auth: `online-mode=true`
 - Whitelist: enabled for private/friend servers, disabled only if public launch is explicit
+- Max players: ask during setup; if omitted, use `max-players=20` for small/friend servers
 - Server description/MOTD: ask; if omitted, use a concise version/type description
 - Server icon/profile picture: ask; if supplied, convert to `server-icon.png`, exactly 64x64 PNG, in the server root
 - Spawn protection: set `spawn-protection=0` unless the user explicitly wants protected spawn
@@ -194,7 +195,7 @@ Report:
 - Installed mods/plugins and their versions.
 - Service status and path.
 - Game/admin ports and firewall exposure.
-- Key `server.properties` values.
+- Key `server.properties` values, including `max-players`, view distance, simulation distance, online mode, and whitelist.
 - Whitelist/ops status.
 - Pregeneration/backups/profiling state.
 - Any known warnings, skipped items, or follow-up commands.
